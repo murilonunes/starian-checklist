@@ -3,8 +3,9 @@
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return response()->json([
+        'name' => config('app.name'),
+        'status' => 'ok',
+        'api' => url('/api/tasks'),
+    ]);
 });
-
-// Incluir rotas da API (má prática - misturando rotas web e api)
-require __DIR__.'/api.php';

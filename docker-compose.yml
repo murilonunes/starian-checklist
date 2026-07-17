@@ -1,25 +1,33 @@
-version: '3.8'
-
 services:
   laravel:
     build:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend:/var/www
+      - ./backend:/backend
+      - backend_vendor:/backend/vendor
     ports:
       - "8000:8000"
     working_dir: /backend
     command: php artisan serve --host=0.0.0.0 --port=8000
+    environment:
+      FRONTEND_URL: http://localhost:4200
 
   angular:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     volumes:
-      - ./frontend:/app
+      - ./frontend:/frontend
+      - frontend_node_modules:/frontend/node_modules
     ports:
       - "4200:4200"
-    command: npm run start -- --host=0.0.0.0
+    command: npm run start -- --host=0.0.0.0 --poll=1000
+    depends_on:
+      - laravel
     stdin_open: true
     tty: true
+
+volumes:
+  backend_vendor:
+  frontend_node_modules:

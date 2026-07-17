@@ -1,18 +1,22 @@
-FROM php:8.3-fpm
+FROM php:8.3-cli
 
-# Instalar dependências do sistema
-RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git curl libpng-dev \
-    && docker-php-ext-install zip pdo pdo_mysql
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libsqlite3-dev libzip-dev unzip \
+    && docker-php-ext-install pdo_sqlite zip \
+    && rm -rf /var/lib/apt/lists/*
 
-# Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Definir diretório
 WORKDIR /backend
 
 COPY . .
 
-RUN composer install
+RUN composer install --no-interaction --prefer-dist
 
-CMD ["php-fpm"]
+RUN sed -i 's/\r$//' docker/entrypoint.sh \
+    && chmod +x docker/entrypoint.sh
+
+EXPOSE 8000
+
+ENTRYPOINT ["docker/entrypoint.sh"]
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]

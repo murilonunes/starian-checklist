@@ -34,46 +34,33 @@ describe('TaskListComponent', () => {
 
   it('loads and displays tasks', () => {
     expect(taskService.list).toHaveBeenCalled();
-    expect(fixture.nativeElement.textContent).toContain('Refatorar projeto');
+    expect(fixture.nativeElement.textContent).toContain(task.title);
   });
 
-  it('adds a task returned by the API', () => {
-    taskService.create.and.returnValue(of(task));
+  it('adds a task emitted by the creation component', () => {
     component.tasks.set([]);
-    component.taskTitle.setValue(task.title);
 
-    component.addTask();
+    component.addCreatedTask(task);
 
-    expect(taskService.create).toHaveBeenCalledWith({ title: task.title });
     expect(component.tasks()).toEqual([task]);
   });
 
-  it('submits a task when the add button is clicked', () => {
-    taskService.create.and.returnValue(of(task));
-    component.tasks.set([]);
+  it('updates a task returned by the API', () => {
+    const completedTask = { ...task, completed: true };
+    taskService.update.and.returnValue(of(completedTask));
 
-    const input: HTMLInputElement = fixture.nativeElement.querySelector('#task-title');
-    const button: HTMLButtonElement = fixture.nativeElement.querySelector('.button--primary');
-    input.value = task.title;
-    input.dispatchEvent(new Event('input'));
-    fixture.detectChanges();
+    component.toggleTask(task);
 
-    button.click();
-
-    expect(taskService.create).toHaveBeenCalledWith({ title: task.title });
-    expect(component.tasks()).toEqual([task]);
+    expect(taskService.update).toHaveBeenCalledWith(task.id, { completed: true });
+    expect(component.tasks()).toEqual([completedTask]);
   });
 
-  it('does not create a fake task when the API fails', () => {
-    taskService.create.and.returnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
-    component.tasks.set([]);
-    component.taskTitle.setValue('Tarefa inválida');
-
-    component.addTask();
+  it('shows a load error without creating local data', () => {
+    taskService.list.and.returnValue(throwError(() => new HttpErrorResponse({ status: 500 })));
+    component.loadTasks();
     fixture.detectChanges();
 
-    expect(component.tasks()).toEqual([]);
+    expect(component.tasks()).toEqual([task]);
     expect(component.errorMessage()).toContain('Não foi possível');
-    expect(fixture.nativeElement.textContent).not.toContain('Tudo em dia');
   });
 });

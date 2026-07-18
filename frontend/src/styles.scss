@@ -31,3 +31,50 @@ input:focus-visible {
   outline: 3px solid rgba(45, 91, 224, 0.28);
   outline-offset: 2px;
 }
+
+.button {
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  border: 0;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 150ms ease, background 150ms ease, opacity 150ms ease;
+
+  &:not(:disabled):hover {
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+}
+
+.button--primary {
+  color: #fff;
+  background: #2d5be0;
+
+  &:not(:disabled):hover {
+    background: #244dc4;
+  }
+}
+
+.button--secondary {
+  color: #4f5b72;
+  background: #eef1f6;
+
+  &:not(:disabled):hover {
+    background: #e3e7ef;
+  }
+}
+
+.button--remove {
+  flex: 0 0 auto;
+  padding: 0.55rem 0.75rem;
+  color: #b3293c;
+  background: #fff0f2;
+
+  &:not(:disabled):hover {
+    background: #ffe2e7;
+  }
+}

@@ -1,0 +1,20 @@
+<label class="task-item__content">
+  <input
+    type="checkbox"
+    [checked]="task().completed"
+    [disabled]="pending()"
+    (change)="toggleRequested.emit(task())"
+  />
+  <span class="checkmark" aria-hidden="true"></span>
+  <span class="task-title">{{ task().title }}</span>
+</label>
+
+<button
+  class="button button--remove"
+  type="button"
+  [disabled]="pending()"
+  [attr.aria-label]="'Remover tarefa ' + task().title"
+  (click)="removeRequested.emit(task())"
+>
+  Remover
+</button>

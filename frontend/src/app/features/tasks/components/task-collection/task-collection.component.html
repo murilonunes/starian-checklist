@@ -1,0 +1,42 @@
+<section class="tasks-section" aria-labelledby="tasks-section-title">
+  <header class="tasks-section__header">
+    <div class="tasks-section__heading">
+      <h2 id="tasks-section-title">Suas tarefas</h2>
+
+      @if (!loading()) {
+        <span class="tasks-section__count" aria-live="polite">
+          {{ tasks().length }} {{ tasks().length === 1 ? 'item' : 'itens' }}
+        </span>
+      }
+    </div>
+  </header>
+
+  @if (errorMessage()) {
+    <div class="alert" role="alert">
+      <span>{{ errorMessage() }}</span>
+      <button type="button" (click)="retryRequested.emit()">Tentar novamente</button>
+    </div>
+  }
+
+  @if (loading()) {
+    <div class="state-message" role="status">Carregando tarefas…</div>
+  } @else if (tasks().length === 0 && !errorMessage()) {
+    <div class="empty-state">
+      <span class="empty-state__icon" aria-hidden="true">✓</span>
+      <h2>Nenhuma tarefa</h2>
+      <p>Adicione uma tarefa para começar.</p>
+    </div>
+  } @else if (tasks().length > 0) {
+    <ul class="task-list" aria-labelledby="tasks-section-title">
+      @for (task of tasks(); track task.id) {
+        <li
+          app-task-item
+          [task]="task"
+          [pending]="isPending(task.id)"
+          (toggleRequested)="toggleRequested.emit($event)"
+          (removeRequested)="removeRequested.emit($event)"
+        ></li>
+      }
+    </ul>
+  }
+</section>

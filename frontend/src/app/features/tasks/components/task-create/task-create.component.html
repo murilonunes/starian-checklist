@@ -1,0 +1,60 @@
+<div class="task-entry">
+  <button class="button button--primary button--new" type="button" (click)="openDialog()">
+    <span class="button--new__icon" aria-hidden="true">+</span>
+    Nova tarefa
+  </button>
+</div>
+
+<dialog
+  #taskDialog
+  class="task-dialog"
+  aria-labelledby="task-dialog-title"
+  (click)="closeFromBackdrop($event)"
+  (close)="resetForm()"
+>
+  <div class="task-dialog__surface">
+    <header class="task-dialog__header">
+      <h2 id="task-dialog-title">Nova tarefa</h2>
+      <button
+        class="task-dialog__close"
+        type="button"
+        aria-label="Fechar"
+        [disabled]="saving()"
+        (click)="closeDialog()"
+      >
+        ×
+      </button>
+    </header>
+
+    <form class="task-dialog__form" [formGroup]="taskForm" (ngSubmit)="submit()">
+      <label for="task-title">Tarefa</label>
+      <input
+        id="task-title"
+        type="text"
+        maxlength="255"
+        autocomplete="off"
+        placeholder="Ex.: revisar documentação"
+        formControlName="title"
+        [attr.aria-invalid]="titleControl.invalid && titleControl.touched"
+        autofocus
+      />
+
+      @if (titleControl.invalid && titleControl.touched) {
+        <p class="field-error">Digite uma tarefa com até 255 caracteres.</p>
+      }
+
+      @if (errorMessage()) {
+        <p class="task-dialog__error" role="alert">{{ errorMessage() }}</p>
+      }
+
+      <div class="task-dialog__actions">
+        <button class="button button--secondary" type="button" [disabled]="saving()" (click)="closeDialog()">
+          Cancelar
+        </button>
+        <button class="button button--primary button--submit" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Adicionando…' : 'Adicionar' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</dialog>

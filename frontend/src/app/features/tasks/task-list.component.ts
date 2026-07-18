@@ -1,13 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { Task } from '../../core/models/task.model';
 import { TaskService } from '../../core/services/task.service';
+import { TaskCollectionComponent } from './components/task-collection/task-collection.component';
+import { TaskCreateComponent } from './components/task-create/task-create.component';
+import { TaskHeaderComponent } from './components/task-header/task-header.component';
 
 @Component({
   selector: 'app-task-list',
-  imports: [ReactiveFormsModule],
+  imports: [TaskHeaderComponent, TaskCreateComponent, TaskCollectionComponent],
   templateUrl: './task-list.component.html',
   styleUrl: './task-list.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -15,16 +17,8 @@ import { TaskService } from '../../core/services/task.service';
 export class TaskListComponent implements OnInit {
   private readonly taskService = inject(TaskService);
 
-  readonly taskTitle = new FormControl('', {
-    nonNullable: true,
-    validators: [Validators.required, Validators.maxLength(255)]
-  });
-  readonly taskForm = new FormGroup({
-    title: this.taskTitle
-  });
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal(true);
-  readonly saving = signal(false);
   readonly errorMessage = signal('');
   readonly pendingTaskIds = signal<ReadonlySet<number>>(new Set<number>());
   readonly remainingCount = computed(() => this.tasks().filter((task) => !task.completed).length);
@@ -45,31 +39,8 @@ export class TaskListComponent implements OnInit {
       });
   }
 
-  addTask(): void {
-    const title = this.taskTitle.value.trim();
-
-    if (!title) {
-      this.taskTitle.setErrors({ required: true });
-      this.taskTitle.markAsTouched();
-      return;
-    }
-
-    if (this.taskTitle.invalid || this.saving()) {
-      return;
-    }
-
-    this.saving.set(true);
-    this.errorMessage.set('');
-
-    this.taskService.create({ title })
-      .pipe(finalize(() => this.saving.set(false)))
-      .subscribe({
-        next: (task) => {
-          this.tasks.update((tasks) => [task, ...tasks]);
-          this.taskTitle.reset();
-        },
-        error: (error: HttpErrorResponse) => this.showError(error, 'adicionar a tarefa')
-      });
+  addCreatedTask(task: Task): void {
+    this.tasks.update((tasks) => [task, ...tasks]);
   }
 
   toggleTask(task: Task): void {
@@ -122,7 +93,7 @@ export class TaskListComponent implements OnInit {
 
   private showError(error: HttpErrorResponse, action: string): void {
     const message = error.status === 0
-      ? 'Não foi possível conectar ao servidor. Verifique se a API está em execução.'
+      ? 'Não foi possível conectar. Verifique sua conexão e tente novamente.'
       : `Não foi possível ${action}. Tente novamente.`;
 
     this.errorMessage.set(message);

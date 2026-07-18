@@ -1,0 +1,13 @@
+<header class="task-header">
+  <div class="task-header__intro">
+    <h1 id="task-list-title">Lista de tarefas</h1>
+    <p>Organize suas tarefas e acompanhe o progresso.</p>
+  </div>
+
+  @if (!loading() && !hasError()) {
+    <div class="task-header__counter" aria-live="polite">
+      <strong>{{ remainingCount() }}</strong>
+      <span>{{ remainingCount() === 1 ? 'pendente' : 'pendentes' }}</span>
+    </div>
+  }
+</header>

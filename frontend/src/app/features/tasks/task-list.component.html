@@ -1,84 +1,19 @@
 <main class="page-shell">
   <section class="task-card" aria-labelledby="task-list-title">
-    <header class="task-card__header">
-      <div>
-        <p class="eyebrow">Minha rotina</p>
-        <h1 id="task-list-title">Lista de tarefas</h1>
-        <p class="subtitle">Organize o que precisa ser feito e acompanhe seu progresso.</p>
-      </div>
-
-      @if (!loading() && !errorMessage()) {
-        <div class="counter" aria-live="polite">
-          <strong>{{ remainingCount() }}</strong>
-          <span>{{ remainingCount() === 1 ? 'pendente' : 'pendentes' }}</span>
-        </div>
-      }
-    </header>
-
-    <form class="task-form" [formGroup]="taskForm" (ngSubmit)="addTask()">
-      <label for="task-title">Nova tarefa</label>
-      <div class="task-form__controls">
-        <input
-          id="task-title"
-          type="text"
-          maxlength="255"
-          autocomplete="off"
-          placeholder="Ex.: revisar documentação"
-          formControlName="title"
-          [attr.aria-invalid]="taskTitle.invalid && taskTitle.touched"
-        />
-        <button class="button button--primary" type="submit" [disabled]="saving()">
-          {{ saving() ? 'Adicionando…' : 'Adicionar' }}
-        </button>
-      </div>
-
-      @if (taskTitle.invalid && taskTitle.touched) {
-        <p class="field-error">Informe uma tarefa com até 255 caracteres.</p>
-      }
-    </form>
-
-    @if (errorMessage()) {
-      <div class="alert" role="alert">
-        <span>{{ errorMessage() }}</span>
-        <button type="button" (click)="loadTasks()">Tentar novamente</button>
-      </div>
-    }
-
-    @if (loading()) {
-      <div class="state-message" role="status">Carregando tarefas…</div>
-    } @else if (tasks().length === 0 && !errorMessage()) {
-      <div class="empty-state">
-        <span class="empty-state__icon" aria-hidden="true">✓</span>
-        <h2>Tudo em dia</h2>
-        <p>Adicione uma tarefa para começar.</p>
-      </div>
-    } @else if (tasks().length > 0) {
-      <ul class="task-list" aria-label="Tarefas">
-        @for (task of tasks(); track task.id) {
-          <li class="task-item" [class.task-item--completed]="task.completed">
-            <label class="task-item__content">
-              <input
-                type="checkbox"
-                [checked]="task.completed"
-                [disabled]="isPending(task.id)"
-                (change)="toggleTask(task)"
-              />
-              <span class="checkmark" aria-hidden="true"></span>
-              <span class="task-title">{{ task.title }}</span>
-            </label>
-
-            <button
-              class="button button--remove"
-              type="button"
-              [disabled]="isPending(task.id)"
-              [attr.aria-label]="'Remover tarefa ' + task.title"
-              (click)="removeTask(task)"
-            >
-              Remover
-            </button>
-          </li>
-        }
-      </ul>
-    }
+    <app-task-header
+      [loading]="loading()"
+      [hasError]="!!errorMessage()"
+      [remainingCount]="remainingCount()"
+    />
+    <app-task-create (taskCreated)="addCreatedTask($event)" />
+    <app-task-collection
+      [tasks]="tasks()"
+      [loading]="loading()"
+      [errorMessage]="errorMessage()"
+      [pendingTaskIds]="pendingTaskIds()"
+      (retryRequested)="loadTasks()"
+      (toggleRequested)="toggleTask($event)"
+      (removeRequested)="removeTask($event)"
+    />
   </section>
 </main>

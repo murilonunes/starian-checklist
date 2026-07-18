@@ -1,26 +1,51 @@
-# 🧪 Teste Técnico — Refatoração Fullstack (Angular + PHP)
+# Starian Checklist
 
+Refatoração da lista de tarefas, com Angular 20 no frontend e Laravel 13 no backend.
 
-Bem-vindo(a) ao teste técnico!  
-Este repositório contém um projeto propositalmente **mal estruturado** e com diversas **más práticas** tanto no **frontend (Angular)** quanto no **backend (PHP)**.
+O trabalho foi direcionado para melhorar a organização do código, corrigir o fluxo de criação das tarefas e deixar o ambiente de desenvolvimento reproduzível.
 
-O objetivo deste teste **não é entregar uma feature nova**, mas sim **refatorar o projeto existente**, identificando e corrigindo problemas de estrutura, organização, legibilidade e boas práticas.
+## O que foi feito
 
----
+- O backend foi organizado em Controller, Form Requests, API Resource e Model, separando validação, persistência e resposta HTTP.
+- O armazenamento em arquivo JSON foi substituído por SQLite, evitando manipulação manual de arquivos e oferecendo uma persistência mais confiável.
+- A API passou a disponibilizar um CRUD REST para listar, criar, atualizar e excluir tarefas.
+- O projeto foi atualizado para Laravel 13 com PHP 8.3.
+- O frontend foi atualizado para Angular 20 e separado em modelos, serviço HTTP e componentes por responsabilidade: cabeçalho, criação, coleção e item de tarefa.
+- O estado da tela utiliza Signals e `OnPush`, reduzindo atualizações desnecessárias e mantendo o fluxo mais previsível.
+- Foram tratados carregamento, validação, operações pendentes e falhas de comunicação com a API.
+- A interface foi refeita para funcionar em diferentes tamanhos de tela e oferecer controles acessíveis.
+- O Docker Compose foi ajustado para utilizar `npm ci`, SQLite e volumes próprios para `vendor` e `node_modules`.
+- Foram adicionados testes para os endpoints do backend, o serviço HTTP e as principais interações do frontend.
 
-## 🎯 Objetivo
+## Execução
 
-Avaliar sua capacidade de:
+Com Docker Desktop em execução:
 
-- Identificar más práticas e problemas técnicos em projetos existentes
-- Refatorar código front e back para melhorar **qualidade, legibilidade, manutenibilidade e boas práticas**
-- Separar responsabilidades, aplicar arquitetura mais limpa e moderna
-- Garantir que a aplicação continue funcionando após as melhorias
-- Escrever código de forma clara, coesa e consistente
-- Garantir responsividade.
+```bash
+docker compose up --build
+```
 
-📬 Instruções de Entrega
-- Crie um novo respositório utilizando este como template;
-  <img width="1285" height="242" alt="image" src="https://github.com/user-attachments/assets/093203bc-88d3-4806-b688-877369d0bfec" />
-- Clone o seu repositório gerado do template;
-- Após concluir o teste, envie o link do seu repositório para a equipe técnica responsável pela avaliação
+Após a inicialização:
+
+- Frontend: http://localhost:4200
+- API: http://localhost:8000/api/tasks
+- Status do backend: http://localhost:8000
+
+## Testes
+
+Backend:
+
+```bash
+cd backend
+php artisan test
+```
+
+Frontend:
+
+```bash
+cd frontend
+npm test -- --watch=false --browsers=ChromeHeadless
+npm run build
+```
+
+Os testes do backend utilizam SQLite em memória e não alteram o banco usado no desenvolvimento.

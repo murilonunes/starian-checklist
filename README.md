@@ -1,5 +1,7 @@
 # Starian Checklist
 
+[![CI](https://github.com/murilonunes/starian-checklist/actions/workflows/ci.yml/badge.svg)](https://github.com/murilonunes/starian-checklist/actions/workflows/ci.yml)
+
 Refatoração da lista de tarefas, com Angular 20 no frontend e Laravel 13 no backend.
 
 O trabalho foi direcionado para melhorar a organização do código, corrigir o fluxo de criação das tarefas e deixar o ambiente de desenvolvimento reproduzível.
@@ -49,3 +51,9 @@ npm run build
 ```
 
 Os testes do backend utilizam SQLite em memória e não alteram o banco usado no desenvolvimento.
+
+## Integração contínua
+
+O GitHub Actions valida cada pull request e atualização da branch `main`. A esteira executa os testes e as verificações de qualidade do Laravel e do Angular, audita as dependências, gera o frontend e confirma a construção das imagens com Docker Compose.
+
+O build do frontend fica disponível por sete dias como artefato da execução. Não há publicação de imagens nem implantação em produção. O Dependabot verifica semanalmente as dependências do Composer, npm, Docker e das próprias Actions.

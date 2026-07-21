@@ -33,6 +33,10 @@ Após a inicialização:
 - API: http://localhost:8000/api/tasks
 - Status do backend: http://localhost:8000
 
+## Ambiente online
+
+A demonstração está disponível no [GitHub Pages](https://murilonunes.github.io/starian-checklist/). Nesse ambiente, as tarefas ficam salvas somente no navegador utilizado. O ambiente local continua integrado à API Laravel e ao SQLite.
+
 ## Testes
 
 Backend:
@@ -56,4 +60,4 @@ Os testes do backend utilizam SQLite em memória e não alteram o banco usado no
 
 O GitHub Actions valida cada pull request e atualização da branch `main`. A esteira executa os testes e as verificações de qualidade do Laravel e do Angular, audita as dependências, gera o frontend e confirma a construção das imagens com Docker Compose.
 
-O build do frontend fica disponível por sete dias como artefato da execução. Não há publicação de imagens nem implantação em produção. O Dependabot verifica semanalmente as dependências do Composer, npm, Docker e das próprias Actions.
+O build do frontend fica disponível por sete dias como artefato da execução. Depois que todas as verificações passam na branch `main`, uma demonstração é publicada no GitHub Pages. Não há publicação de imagens nem implantação da API em produção. O Dependabot verifica semanalmente as dependências do Composer, npm, Docker e das próprias Actions.

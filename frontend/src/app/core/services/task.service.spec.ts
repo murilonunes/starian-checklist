@@ -3,19 +3,19 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 import { environment } from '../../../environments/environment';
 import { Task } from '../models/task.model';
-import { TaskService } from './task.service';
+import { ApiTaskService } from './api-task.service';
 
-describe('TaskService', () => {
-  let service: TaskService;
+describe('ApiTaskService', () => {
+  let service: ApiTaskService;
   let http: HttpTestingController;
   const endpoint = `${environment.apiUrl}/tasks`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()]
+      providers: [provideHttpClient(), provideHttpClientTesting(), ApiTaskService]
     });
 
-    service = TestBed.inject(TaskService);
+    service = TestBed.inject(ApiTaskService);
     http = TestBed.inject(HttpTestingController);
   });
 
